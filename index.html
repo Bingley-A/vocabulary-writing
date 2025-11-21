@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>词语拼读练习</title>
+  <title>词语听说读写</title>
   <style>
     :root{
       --c1:#FF6F61; --c2:#FFB74D; --c3:#4DB6AC; --c4:#64B5F6; --c5:#BA68C8;
@@ -493,6 +493,7 @@
     let writer = null;
     let writingAttempts = 0;
     let isCustomWords = false;
+    let isCurrentWordCorrect = true;
     const selectedWords = new Set();
 
     function shuffleArray(arr) {
@@ -557,7 +558,14 @@
     function startGame() {
       if (isCustomWords && selectedWords.size > 0) {
         const allWords = Object.values(gradeWords).flat();
-        pool = allWords.filter(w => selectedWords.has(w.word));
+        // 修改：增加去重逻辑，确保同一个词只出现一次
+        const uniqueMap = new Map();
+        allWords.forEach(w => {
+            if (selectedWords.has(w.word) && !uniqueMap.has(w.word)) {
+                uniqueMap.set(w.word, w);
+            }
+        });
+        pool = Array.from(uniqueMap.values());
       } else {
         pool = buildPoolForGrade(selectedGrade);
       }
@@ -583,6 +591,7 @@
 
     function showQuestion(index) {
       // 重置所有状态
+      isCurrentWordCorrect = true;
       recDone = false;
       recCorrect = false;
       currentStage = 1;
@@ -808,26 +817,33 @@
 
       // 禁用所有按钮
       document.querySelectorAll(".choice").forEach(b => b.disabled = true);
+    // 如果全对，显示正确拼音；如果有错，标记当前词为错误
+    if (initialCorrect && finalCorrect && toneCorrect) {
+      // score++;  <--- 【删除】这里不再立即加分
+      // scoreText.textContent = ...; <--- 【删除】这里不再立即更新显示
+      
+      const pinyinSpan = wordDisplay.querySelectorAll('.pinyin-display')[currentCharIndex];
+      pinyinSpan.textContent = markTone(syl.pinyinBase, syl.tone);
+      pinyinSpan.style.display = 'block';
+    } else {
+      isCurrentWordCorrect = false; // <--- 【新增】只要有一个字（或声韵调）选错，这个词就不得分
+    }
 
-      // 如果全对，得分+1，并显示正确拼音
-      if (initialCorrect && finalCorrect && toneCorrect) {
-        score++;
-        scoreText.textContent = `得分：${score}`;
-        const pinyinSpan = wordDisplay.querySelectorAll('.pinyin-display')[currentCharIndex];
-        pinyinSpan.textContent = markTone(syl.pinyinBase, syl.tone);
-        pinyinSpan.style.display = 'block';
-      }
-
-      // 进入下一个字或下一阶段
-      setTimeout(() => {
-        currentCharIndex++;
-        if (currentCharIndex < q.syllables.length) {
-          choicesEl.innerHTML = "";
-          showPinyinSelectionForChar(currentCharIndex);
-        } else {
-          checkStageProgress();
+    // 进入下一个字或下一阶段
+    setTimeout(() => {
+      currentCharIndex++;
+      if (currentCharIndex < q.syllables.length) {
+        choicesEl.innerHTML = "";
+        showPinyinSelectionForChar(currentCharIndex);
+      } else {
+        // 【新增】整词的所有字都处理完了，检查是否一直保持正确
+        if (isCurrentWordCorrect) {
+          score++; // 整词全对才加1分
+          scoreText.textContent = `得分：${score}`;
         }
-      }, 1500);
+        checkStageProgress();
+      }
+    }, 1500);
     }
 
     function showWritingForChar(charIndex) {
@@ -1263,5 +1279,4 @@
     document.querySelector(`.grade-btn[data-grade="4"]`).classList.add("selected");
   </script>
 </body>
-
 </html>
