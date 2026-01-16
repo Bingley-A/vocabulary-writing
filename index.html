@@ -296,22 +296,6 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
 </head>
-  <!-- 结算页 - 本轮词语查看模态框 -->
-<div id="result-word-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; padding:20px;">
-  <div class="modal-content" style="background:white; border-radius:18px; padding:24px; width:95vw; max-width:900px; max-height:85vh; overflow-y:auto;">
-    
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-      <h2 style="margin:0; color:var(--c1);">本轮练习词语</h2>
-      <button id="close-result-modal" style="background:none; border:none; font-size:28px; cursor:pointer; color:#666;">×</button>
-    </div>
-    
-    <div id="result-word-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px;"></div>
-    
-    <div style="margin-top:24px; text-align:center;">
-      <button id="close-result-modal-btn" class="home-btn" style="padding:10px 24px;">关闭</button>
-    </div>
-  </div>
-</div>
 <body>
   <div class="animal-emoji animal-1">🐰</div>
   <div class="animal-emoji animal-2">🐯</div>
@@ -415,11 +399,6 @@
     查看本轮词语（共 <span id="this-round-word-count">0</span> 个）
   </button>
 </div>
-  <div style="margin-top:12px;display:flex;gap:10px;justify-content:center">
-    <button id="retry-btn" class="start-btn">再来一次</button>
-    <button id="back-home-btn" class="home-btn">返回首页</button>
-  </div>
-</div>
           <div style="margin-top:12px;display:flex;gap:10px;justify-content:center">
             <button id="retry-btn" class="start-btn">再来一次</button>
             <button id="back-home-btn" class="home-btn">返回首页</button>
@@ -441,7 +420,22 @@
       </div>
     </div>
   </div>
-
+ <!-- 结算页 - 本轮词语查看模态框 -->
+<div id="result-word-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; padding:20px;">
+  <div class="modal-content" style="background:white; border-radius:18px; padding:24px; width:95vw; max-width:900px; max-height:85vh; overflow-y:auto;">
+    
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h2 style="margin:0; color:var(--c1);">本轮练习词语</h2>
+      <button id="close-result-modal" style="background:none; border:none; font-size:28px; cursor:pointer; color:#666;">×</button>
+    </div>
+    
+    <div id="result-word-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px;"></div>
+    
+    <div style="margin-top:24px; text-align:center;">
+      <button id="close-result-modal-btn" class="home-btn" style="padding:10px 24px;">关闭</button>
+    </div>
+  </div>
+</div>
   <audio id="audio" preload="auto" style="display:none"></audio>
 
   <script>
@@ -1476,6 +1470,7 @@
   </script>
 </body>
 </html>
+
 
 
 
