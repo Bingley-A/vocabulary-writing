@@ -296,6 +296,22 @@
   </style>
   <script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.5/dist/hanzi-writer.min.js"></script>
 </head>
+  <!-- 结算页 - 本轮词语查看模态框 -->
+<div id="result-word-modal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; padding:20px;">
+  <div class="modal-content" style="background:white; border-radius:18px; padding:24px; width:95vw; max-width:900px; max-height:85vh; overflow-y:auto;">
+    
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h2 style="margin:0; color:var(--c1);">本轮练习词语</h2>
+      <button id="close-result-modal" style="background:none; border:none; font-size:28px; cursor:pointer; color:#666;">×</button>
+    </div>
+    
+    <div id="result-word-list" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:12px;"></div>
+    
+    <div style="margin-top:24px; text-align:center;">
+      <button id="close-result-modal-btn" class="home-btn" style="padding:10px 24px;">关闭</button>
+    </div>
+  </div>
+</div>
 <body>
   <div class="animal-emoji animal-1">🐰</div>
   <div class="animal-emoji animal-2">🐯</div>
@@ -393,6 +409,17 @@
           <div style="font-weight:900">本轮完成</div>
           <div class="score-big" id="final-score">0 / 0</div>
           <div class="encourage" id="encourage"></div>
+         <!-- 新增：查看本轮词语按钮 -->
+<div style="margin: 24px 0; text-align: center;">
+  <button id="show-this-round-words" class="start-btn">
+    查看本轮词语（共 <span id="this-round-word-count">0</span> 个）
+  </button>
+</div>
+  <div style="margin-top:12px;display:flex;gap:10px;justify-content:center">
+    <button id="retry-btn" class="start-btn">再来一次</button>
+    <button id="back-home-btn" class="home-btn">返回首页</button>
+  </div>
+</div>
           <div style="margin-top:12px;display:flex;gap:10px;justify-content:center">
             <button id="retry-btn" class="start-btn">再来一次</button>
             <button id="back-home-btn" class="home-btn">返回首页</button>
@@ -418,6 +445,7 @@
   <audio id="audio" preload="auto" style="display:none"></audio>
 
   <script>
+    let wordCorrectStatus = [];  // 记录每道题是否正确，true=正确，false=错误
     // 修改：在gradeWords中增加每个字的声母(initial)和韵母(final)信息
     const gradeWords = {
   1: [],
@@ -663,6 +691,7 @@
     }
 
     function startGame() {
+      wordCorrectStatus = new Array(total).fill(false);  // 先全部标为错
       if (isCustomWords && selectedWords.size > 0) {
         const allWords = Object.values(gradeWords).flat();
         // 修改：增加去重逻辑，确保同一个词只出现一次
@@ -947,6 +976,7 @@
         if (isCurrentWordCorrect) {
           score++; // 整词全对才加1分
           scoreText.textContent = `得分：${score}`;
+          wordCorrectStatus[cur] = true;   // ← 记录这题正确
         }
         checkStageProgress();
       }
@@ -1189,7 +1219,65 @@
       if (pct >= 60) {
         showCelebrationAnimation(pct);
       }
+    // 准备本轮词语数据
+  const modal = document.getElementById("result-word-modal");
+  const wordCountSpan = document.getElementById("this-round-word-count");
+  const listContainer = document.getElementById("result-word-list");
+  const showBtn = document.getElementById("show-this-round-words");
+  const closeBtns = document.querySelectorAll("#close-result-modal, #close-result-modal-btn");
+
+  // 填充数量
+  wordCountSpan.textContent = total;
+
+  // 清空旧内容
+  listContainer.innerHTML = "";
+
+  // 按游戏顺序填充词语（使用 order 数组保持原始出题顺序）
+  order.forEach((originalIndex, displayOrder) => {
+    const q = pool[originalIndex];
+    const isCorrect = wordCorrectStatus[displayOrder];  // 注意这里用的是显示顺序的索引
+
+    const item = document.createElement("div");
+    item.style.padding = "12px";
+    item.style.borderRadius = "10px";
+    item.style.background = "#f8f9fa";
+    item.style.textAlign = "center";
+    item.style.fontSize = "18px";
+    item.style.fontWeight = "bold";
+
+    // 根据对错设置颜色
+    if (isCorrect) {
+      item.style.color = "#2e7d32";           // 深绿
+      item.style.background = "#e8f5e9";
+    } else {
+      item.style.color = "#c62828";           // 深红
+      item.style.background = "#ffebee";
     }
+
+    item.textContent = `${q.word} (${q.pinyin})`;
+
+    listContainer.appendChild(item);
+  });
+
+  // 点击按钮显示模态框
+  showBtn.onclick = () => {
+    modal.style.display = "flex";
+  };
+
+  // 关闭模态框（两种方式）
+  closeBtns.forEach(btn => {
+    btn.onclick = () => {
+      modal.style.display = "none";
+    };
+  });
+
+  // 点击背景关闭
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+}
 
     function showCelebrationAnimation(percentage) {
       const celebrationDiv = document.createElement("div");
@@ -1387,6 +1475,7 @@
   </script>
 </body>
 </html>
+
 
 
 
