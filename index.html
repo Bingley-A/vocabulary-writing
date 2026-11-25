@@ -442,7 +442,7 @@
     let wordCorrectStatus = [];  // 记录每道题是否正确，true=正确，false=错误
     // 修改：在gradeWords中增加每个字的声母(initial)和韵母(final)信息
     const gradeWords = {
-  1: [{ word: "一二", pinyin: "yī èr", syllables: [{ char: "一", pinyinBase: "yi", tone: 1, initial: "y", final: "i" }, { char: "二", pinyinBase: "er", tone: 4, initial: "e", final: "er" }], english: "one two" },
+  1: [{ word: "一二", pinyin: "yī èr", syllables: [{ char: "一", pinyinBase: "yi", tone: 1, initial: "y", final: "i" }, { char: "二", pinyinBase: "er", tone: 4, initial: "无", final: "er" }], english: "one two" },
 { word: "三四", pinyin: "sān sì", syllables: [{ char: "三", pinyinBase: "san", tone: 1, initial: "s", final: "an" }, { char: "四", pinyinBase: "si", tone: 4, initial: "s", final: "i" }], english: "three four" },
 { word: "五六", pinyin: "wǔ liù", syllables: [{ char: "五", pinyinBase: "wu", tone: 3, initial: "w", final: "u" }, { char: "六", pinyinBase: "liu", tone: 4, initial: "l", final: "iu" }], english: "five six" },
 { word: "七八", pinyin: "qī bā", syllables: [{ char: "七", pinyinBase: "qi", tone: 1, initial: "q", final: "i" }, { char: "八", pinyinBase: "ba", tone: 1, initial: "b", final: "a" }], english: "seven eight" },
@@ -525,7 +525,7 @@
     { word: "姐姐", pinyin: "jiě jie", syllables: [{ char: "姐", pinyinBase: "jie", tone: 3, initial: "j", final: "ie" }, { char: "姐", pinyinBase: "jie", tone: 5, initial: "j", final: "ie" }], english: "elder sister" },
 { word: "妹妹", pinyin: "mèi mei", syllables: [{ char: "妹", pinyinBase: "mei", tone: 4, initial: "m", final: "ei" }, { char: "妹", pinyinBase: "mei", tone: 5, initial: "m", final: "ei" }], english: "younger sister" },
 { word: "长大", pinyin: "zhǎng dà", syllables: [{ char: "长", pinyinBase: "zhang", tone: 3, initial: "zh", final: "ang" }, { char: "大", pinyinBase: "da", tone: 4, initial: "d", final: "a" }], english: "grow up; become an adult" },
-{ word: "爱心", pinyin: "ài xīn", syllables: [{ char: "爱", pinyinBase: "ai", tone: 4, initial: "a", final: "ai" }, { char: "心", pinyinBase: "xin", tone: 1, initial: "x", final: "in" }], english: "compassion; loving heart" },
+{ word: "爱心", pinyin: "ài xīn", syllables: [{ char: "爱", pinyinBase: "ai", tone: 4, initial: "无", final: "ai" }, { char: "心", pinyinBase: "xin", tone: 1, initial: "x", final: "in" }], english: "compassion; loving heart" },
 { word: "想要", pinyin: "xiǎng yào", syllables: [{ char: "想", pinyinBase: "xiang", tone: 3, initial: "x", final: "iang" }, { char: "要", pinyinBase: "yao", tone: 4, initial: "y", final: "ao" }], english: "want; would like to" },
 { word: "一样", pinyin: "yī yàng", syllables: [{ char: "一", pinyinBase: "yi", tone: 1, initial: "y", final: "i" }, { char: "样", pinyinBase: "yang", tone: 4, initial: "y", final: "ang" }], english: "the same; alike" },
 { word: "哥哥", pinyin: "gē ge", syllables: [{ char: "哥", pinyinBase: "ge", tone: 1, initial: "g", final: "e" }, { char: "哥", pinyinBase: "ge", tone: 5, initial: "g", final: "e" }], english: "elder brother" },
@@ -1098,7 +1098,7 @@
     function handlePinyinSelections() {
       const q = pool[order[cur]];
       const syl = q.syllables[currentCharIndex];
-      const correctInitial = syl.initial;
+      const correctInitial = syl.initial === "无" ? "" : syl.initial;
       const correctFinal = syl.final;
       const correctTone = syl.tone;
 
